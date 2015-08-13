@@ -1,6 +1,4 @@
-
- 
- .hero-content {
+.hero-content {
      position: relative;
      min-height: 600px;
      background-image: url(../assets/images/bloc_jams_bg.jpg);
@@ -10,7 +8,8 @@
  }
  
  .hero-content .hero-title {
-     top: 40%;
+     position: absolute;
+	 	 top: 40%;
      -webkit-transform: translateY(-50%);
      -moz-transform: translateY(-50%);
      transform: translateY(-50%);
