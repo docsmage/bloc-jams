@@ -51,13 +51,16 @@
  }
  
  .song-item-title {
-     width: 85%;
+     width: 80%;
  }
  
  .song-item-duration {
-     width: 5%;
+     width: 10%;
  }
 
+.song-item-plays {
+		width: 10%;
+}
  
  /* #2 */
  @media (max-width: 40rem) and (min-width: 20rem) {
