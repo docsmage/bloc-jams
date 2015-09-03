@@ -101,12 +101,18 @@ var albumCover = document.getElementsByClassName('album-cover-art')[0]; // album
 
 albumArray = [albumPicasso, albumMarconi, albumLadyGaga]; // array of albums
 
-var rand = albumArray[Math.floor(Math.random() * albumArray.length)] // variable which holds a random album from the album array
+//var rand = albumArray[Math.floor(Math.random() * albumArray.length)] // variable which holds a random album from the album array - not needed for refactor!
+
+var index = 1;
 
 var shuffleAlbums = function () {
-	setCurrentAlbum(rand);
+	setCurrentAlbum(albumArray[index]);
+	index++;
+	if (index == albumArray.length) {
+		index = 0;
+	}
 }; // function which loads a random album
 
 albumCover.addEventListener("click", shuffleAlbums); // event listener which loads the next album when the album cover is clicked
 
-// This is my best attempt - right now, it works, but only for the first click - it doesn't keep running the function 
+// Revised attempt after watching the video!
