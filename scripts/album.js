@@ -30,6 +30,26 @@
      ]
  };
  
+// Third Example Album - checkpoint 25 assignment
+ var albumLadyGaga = {
+     name: 'The Fame Monster',
+     artist: 'Lady Gaga',
+     label: 'Interscope',
+     year: '2009',
+     albumArtUrl: 'assets/images/album_covers/22.png',
+     songs: [
+         { name: 'Bad Romance', length: '4:54' },
+         { name: 'Alejandro', length: '4:34' },
+         { name: 'Monster', length: '4:10'},
+         { name: 'Speechless', length: '4:31' },
+         { name: 'Dance in the Dark', length: '4:49'},
+			 	 { name: 'Telephone', length: '3:41'},
+			   { name: 'So Happy I Could Die', length: '3:55'},
+			   { name: 'Teeth', length: '3:41'}
+     ]
+ };
+
+
  var createSongRow = function(songNumber, songName, songLength) {
      
      var template =
@@ -71,6 +91,22 @@
  
  window.onload = function() {
    
-     setCurrentAlbum(albumMarconi);
+     setCurrentAlbum(albumladyGaga);
      
  };
+
+// Album cover shuffle - checkpoint 25 
+
+var albumCover = document.getElementsByClassName('album-cover-art')[0]; // album image object
+
+albumArray = [albumPicasso, albumMarconi, albumLadyGaga]; // array of albums
+
+var rand = albumArray[Math.floor(Math.random() * albumArray.length)] // variable which holds a random album from the album array
+
+var shuffleAlbums = function () {
+	setCurrentAlbum(rand);
+}; // function which loads a random album
+
+albumCover.addEventListener("click", shuffleAlbums); // event listener which loads the next album when the album cover is clicked
+
+// This is my best attempt - right now, it works, but only for the first click - it doesn't keep running the function 
