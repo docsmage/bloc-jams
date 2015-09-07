@@ -67,15 +67,27 @@
  
 // Checkpoint 27
 
+//When we wrote findParentByClassName(), we did not account for some potential errors that could occur if we used the method elsewhere. For example, the function doesn't check for any situation where an ancestor element with the specified class name didn't exist, nor does it check to see if the starting element has a parent. Re-write the function so that it:
+//Checks to see if a parent exists. If it doesn't, then show an alert that says "No parent found".
+//Shows a different alert when it fails to find a parent with the given class name ("No parent found with that class name")
+
 var findParentByClassName = function(element, targetClass) {
 
-    var currentParent = element.parentElement;
-    
-    while (currentParent.className != targetClass) {
-        currentParent = currentParent.parentElement
-    }
-    
-    return currentParent;
+	var currentParent = element.parentElement;
+	
+	if (currentParent === null) {
+		alert("No parent found");
+		return;
+	};
+	
+	while (currentParent.className != targetClass) {
+		if (currentParent != null) {
+			alert("No parent found with that class name");
+		};
+		currentParent = currentParent.parentElement
+	}
+
+	return currentParent;
 	
 };
 
