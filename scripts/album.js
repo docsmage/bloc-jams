@@ -29,7 +29,8 @@ var createSongRow = function (songNumber, songName, songLength) {
 	// when user clicks on a song...
 	var clickHandler = function () {
 
-		var songNumber = parseInt($(this).attr('data-song-number'));
+		var songNumber = $(this).attr('data-song-number');
+//		var songNumber = parseInt($(this).attr('data-song-number')); Bloc's refactor
 
 		if (currentlyPlayingSongNumber !== null) {
 		// If we already had a song playing, update song number for currently playing song because user started playing new song.
@@ -54,10 +55,10 @@ var createSongRow = function (songNumber, songName, songLength) {
  
 	// when we hover over a song...
 	var onHover = function (event) {
-//		var songNumberCell = $(this).find('.song-item-number');
-		var songNumberCell = parseInt($(this).attr('.song-item-number'));
-//		var songNumber = songNumberCell.attr('data-song-number');
-		var songNumber = parseInt($(this).attr('data-song-number'));
+		var songNumberCell = $(this).find('.song-item-number');
+//		var songNumberCell = parseInt($(this).attr('.song-item-number'));
+		var songNumber = songNumberCell.attr('data-song-number');
+//		var songNumber = parseInt($(this).attr('data-song-number'));
 		// if it's not already playing, we show the Play button
 		if (songNumber !== currentlyPlayingSongNumber) {
 			songNumberCell.html(playButtonTemplate);
@@ -66,16 +67,17 @@ var createSongRow = function (songNumber, songName, songLength) {
  
 	// when we nav away a song we were just hovering over...
 	var offHover = function (event) {
-//		var songNumberCell = $(this).find('.song-item-number');
-		var songNumberCell = parseInt($(this).attr('.song-item-number'));
-//		var songNumber = songNumberCell.attr('data-song-number');
-		var songNumber = parseInt($(this).attr('data-song-number'));
+		var songNumberCell = $(this).find('.song-item-number');
+		// my attempted refactor, which seems to be problematic
+		//		var songNumberCell = parseInt($(this).attr('.song-item-number'));
+		var songNumber = songNumberCell.attr('data-song-number');
+//		var songNumber = parseInt($(this).attr('data-song-number'));
 		// if it's not the currently playing song we just show the song # again.
 		if (songNumber !== currentlyPlayingSongNumber) {
 			songNumberCell.html(songNumber);
 		}
 
-		console.log("songNumber type is " + typeof songNumber + "\n and currentlyPlayingSongNumber type is " + typeof currentlyPlayingSongNumber); // for testing purposes, not really needed anymore
+//		console.log("songNumber type is " + typeof songNumber + "\n and currentlyPlayingSongNumber type is " + typeof currentlyPlayingSongNumber); // for testing purposes, not really needed anymore
 			
 	};
  
@@ -174,7 +176,10 @@ var nextSong = function () {
     currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
 
     // Update the Player Bar information
-    updatePlayerBarSong();
+    $('.currently-playing .song-name').text(currentSongFromAlbum.name);
+    $('.currently-playing .artist-name').text(currentAlbum.artist);
+    $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.name + " - " + currentAlbum.name);
+    $('.left-controls .play-pause').html(playerBarPauseButton);
 	
 		// updates all the pertinent variables
     var lastSongNumber = getLastSongNumber(currentSongIndex);
@@ -221,5 +226,5 @@ var previousSong = function () {
 
 // checkpoint 32 assignment - function to retrieve the song number cell
 var getSongNumberCell = function (number) {
-	return currentlyPlayingSongNumber;
+	return $('div[data-song-number=' + number + ']'); // brackets allow you to select attributes of a specific kind
 };
