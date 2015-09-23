@@ -1,19 +1,5 @@
 //var $ = $; // to override jslint error
 
-// Self review - there are currently nine methods in album.js:
-
-//1) createSongRow
-//2) clickHandler
-//3) onHover
-//4) offHover
-//5) setCurrentAlbum
-//6) trackIndex
-//7) updatePlayerBarSong
-//8) nextSong
-//9) previousSong
-//& getSongNumberCell has been added in for assignment 32
-
-
 // creates the song rows
 var createSongRow = function (songNumber, songName, songLength) {
      
@@ -29,8 +15,7 @@ var createSongRow = function (songNumber, songName, songLength) {
 	// when user clicks on a song...
 	var clickHandler = function () {
 
-		var songNumber = $(this).attr('data-song-number');
-//		var songNumber = parseInt($(this).attr('data-song-number')); Bloc's refactor
+		var songNumber = parseInt($(this).attr('data-song-number')); // Bloc's refactor
 
 		if (currentlyPlayingSongNumber !== null) {
 		// If we already had a song playing, update song number for currently playing song because user started playing new song.
@@ -47,8 +32,9 @@ var createSongRow = function (songNumber, songName, songLength) {
 		// Switch from Pause -> Play button to pause currently playing song.
 			$(this).html(playButtonTemplate);
 			$('.left-controls .play-pause').html(playerBarPlayButton);
-			currentlyPlayingSongNumber = null;
-			currentSongFromAlbum = null;
+			setSong(null);
+//			currentlyPlayingSongNumber = null;
+//			currentSongFromAlbum = null;
 		}
 
 	};
@@ -56,30 +42,22 @@ var createSongRow = function (songNumber, songName, songLength) {
 	// when we hover over a song...
 	var onHover = function (event) {
 		var songNumberCell = $(this).find('.song-item-number');
-//		var songNumberCell = parseInt($(this).attr('.song-item-number'));
-		var songNumber = songNumberCell.attr('data-song-number');
-//		var songNumber = parseInt($(this).attr('data-song-number'));
+		var songNumber = parseInt($(this).attr('data-song-number')); // Bloc's refactor
 		// if it's not already playing, we show the Play button
 		if (songNumber !== currentlyPlayingSongNumber) {
 			songNumberCell.html(playButtonTemplate);
 		}
-	};
+	}; // ends onHover
  
 	// when we nav away a song we were just hovering over...
 	var offHover = function (event) {
 		var songNumberCell = $(this).find('.song-item-number');
-		// my attempted refactor, which seems to be problematic
-		//		var songNumberCell = parseInt($(this).attr('.song-item-number'));
-		var songNumber = songNumberCell.attr('data-song-number');
-//		var songNumber = parseInt($(this).attr('data-song-number'));
+		var songNumber = parseInt($(this).attr('data-song-number')); // Bloc's refactor
 		// if it's not the currently playing song we just show the song # again.
 		if (songNumber !== currentlyPlayingSongNumber) {
 			songNumberCell.html(songNumber);
 		}
-
-//		console.log("songNumber type is " + typeof songNumber + "\n and currentlyPlayingSongNumber type is " + typeof currentlyPlayingSongNumber); // for testing purposes, not really needed anymore
-			
-	};
+	}; // ends offHover
  
 	// instantiates all the methods written above
 	$row.find('.song-item-number').click(clickHandler);
@@ -139,12 +117,16 @@ var playerBarPauseButton = '<span class="ion-pause"></span>';
 
  // Store state of playing songs
 var currentAlbum = null;
+//setSong(null);
 var currentlyPlayingSongNumber = null;
 var currentSongFromAlbum = null;
+
+
 
  // Player bar element selectors
 var $previousButton = $('.left-controls .previous');
 var $nextButton = $('.left-controls .next');
+
 
 // when document loads, set up the album
 $(document).ready(function () {
@@ -172,9 +154,10 @@ var nextSong = function () {
     }
     
     // Set a new current song
-    currentlyPlayingSongNumber = currentSongIndex + 1;
-    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
-
+	setSong(currentAlbum.songs[currentSongIndex + 1]);
+//	currentlyPlayingSongNumber = currentSongIndex + 1;
+//    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
+	
     // Update the Player Bar information
     $('.currently-playing .song-name').text(currentSongFromAlbum.name);
     $('.currently-playing .artist-name').text(currentAlbum.artist);
@@ -188,7 +171,7 @@ var nextSong = function () {
     
     $nextSongNumberCell.html(pauseButtonTemplate);
     $lastSongNumberCell.html(lastSongNumber);
-    
+		
 	}; // ends nextSong
 
 // function for user to skip to the previous song in the list using the player bar button
@@ -208,8 +191,9 @@ var previousSong = function () {
     }
     
     // Set a new current song
-    currentlyPlayingSongNumber = currentSongIndex + 1;
-    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
+  setSong(currentAlbum.songs[currentSongIndex + 1]);
+//	currentlyPlayingSongNumber = currentSongIndex + 1;
+//    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
 
     // Update the Player Bar information
     updatePlayerBarSong();
@@ -221,10 +205,17 @@ var previousSong = function () {
     
 	$previousSongNumberCell.html(pauseButtonTemplate);
 	$lastSongNumberCell.html(lastSongNumber);
-    
+    	
 }; // ends previousSong
 
 // checkpoint 32 assignment - function to retrieve the song number cell
 var getSongNumberCell = function (number) {
 	return $('div[data-song-number=' + number + ']'); // brackets allow you to select attributes of a specific kind
 };
+
+// checkpoint 32 assignment - function that assigns currentlyPlayingSongNumber and currentSongFromAlbum a new value based on the new song number.
+var setSong = function (songNumber) {
+	currentlyPlayingSongNumber = songNumber;
+	currentSongFromAlbum = songNumber;
+	return songNumber;
+}; // Renee's attempt
