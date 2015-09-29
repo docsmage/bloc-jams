@@ -140,24 +140,14 @@ var $previousButton = $('.left-controls .previous');
 var $nextButton = $('.left-controls .next');
 
 
-// when document loads, set up the album
-$(document).ready(function () {
-	 
-	setCurrentAlbum(albumPicasso);
-	$previousButton.click(previousSong);
-	$nextButton.click(nextSong);
-	$('.left-controls .play-pause').html(playerBarPauseButton);
-
-});
-
 // function for user to skip to the next song in the list using the player bar button
 var nextSong = function () {
-
-		indexOfNextSong = trackIndex(currentAlbum, currentSongFromAlbum) + 1;
+	
+var indexOfNextSong = trackIndex(currentAlbum, currentSongFromAlbum) + 1;
     
-    if (indexOfNextSong >= currentAlbum.songs.length) {
-        indexOfNextSong = 0;
-    }
+if (indexOfNextSong >= currentAlbum.songs.length) {
+	indexOfNextSong = 0;
+}	
 	
     var getLastSongNumber = function (index) {
         return index === 0 ? currentAlbum.songs.length : index;
@@ -209,9 +199,8 @@ var previousSong = function () {
     }
     
     // Set a new current song
-  setSong(indexOfNextSong);
-//		currentlyPlayingSongNumber = currentSongIndex + 1;
-//    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
+		currentlyPlayingSongNumber = currentSongIndex + 1;
+    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
 
     // Update the Player Bar information
     updatePlayerBarSong();
@@ -225,3 +214,13 @@ var previousSong = function () {
 	$lastSongNumberCell.html(lastSongNumber);
     	
 }; // ends previousSong
+
+// when document loads, set up the album
+$(document).ready(function () {
+	 
+	setCurrentAlbum(albumPicasso);
+	$previousButton.click(previousSong);
+	$nextButton.click(nextSong);
+	$('.left-controls .play-pause').html(playerBarPauseButton);
+
+});
