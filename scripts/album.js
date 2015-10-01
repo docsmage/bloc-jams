@@ -15,26 +15,31 @@ var createSongRow = function (songNumber, songName, songLength) {
 	// when user clicks on a song...
 	var clickHandler = function () {
 
-		var songNumber = parseInt($(this).attr('data-song-number')); // Bloc's refactor
+		var songNumber = parseInt($(this).attr('data-song-number'));
 
 		if (currentlyPlayingSongNumber !== null) {
-		// If we already had a song playing, update song number for currently playing song because user started playing new song.
 			var currentlyPlayingCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
 			currentlyPlayingCell.html(currentlyPlayingSongNumber);
-		} // No need to update the Play button here because we've merely switched from playing the old song to playing the new song.
-		if (currentlyPlayingSongNumber !== songNumber) { // check to see if were clicking the same song twice
-		// Switch from Play -> Pause button to indicate new song is playing.
+		} 
+		
+		if (currentlyPlayingSongNumber !== songNumber) {
 			$(this).html(pauseButtonTemplate);
 			setSong(songNumber - 1);
-//			currentlyPlayingSongNumber = songNumber; // comment out to replace w/setSong as needed
-//			currentSongFromAlbum = currentAlbum.songs[songNumber - 1]; // comment out later
+			currentSoundFile.play();
+			$(this).html(pauseButtonTemplate);
 			updatePlayerBarSong();
+
 		} else if (currentlyPlayingSongNumber === songNumber) {
-		// Switch from Pause -> Play button to pause currently playing song.
-			$(this).html(playButtonTemplate);
-			$('.left-controls .play-pause').html(playerBarPlayButton);
-			currentlyPlayingSongNumber = null;
-			currentSongFromAlbum = null;
+			if (currentSoundFile.isPaused()) {
+				$(this).html(pauseButtonTemplate);
+				$('.left-controls .play-pause').html(playerBarPlayButton);
+				currentSoundFile.play();
+			}
+			else {
+				$(this).html(playButtonTemplate);
+				$('.left-controls .play-pause').html(playerBarPlayButton);
+				currentSoundFile.pause();
+			}
 		}
 
 	};
@@ -107,13 +112,31 @@ var getSongNumberCell = function (number) {
 	return $('.song-item-number[data-song-number="' + number + '"]'); // brackets allow you to select attributes of a specific kind
 };
 
-// checkpoint 32 assignment - function to set song
+// sets song and instantiates music
 var setSong = function (number) {
-	
+	if (currentSoundFile) {
+		currentSoundFile.stop();
+	}
+
 	currentlyPlayingSongNumber = parseInt(number + 1);
 	currentSongFromAlbum = currentAlbum.songs[number];
-
-}; // Renee's attempt after collabing with Teri
+	
+	currentSoundFile = new buzz.sound(currentSongFromAlbum.audioUrl, {
+         formats: [ 'mp3' ],
+         preload: true
+	});
+	
+setVolume(currentVolume);
+	
+}; // ends setSong
+ 
+ var setVolume = function(volume) {
+	 
+     if (currentSoundFile) {
+         currentSoundFile.setVolume(volume);
+     }
+	 
+ }; // ends setVolume
 
 // updates the player bar per the current song being played
 var updatePlayerBarSong = function () {
@@ -133,7 +156,9 @@ var playerBarPauseButton = '<span class="ion-pause"></span>';
  // Store state of playing songs
 var currentAlbum = null;
 var currentlyPlayingSongNumber = null;
-var currentSongFromAlbum = null;
+var currentSongFromAlbum = null
+var currentSoundFile = null;
+var currentVolume = 80;
 
  // Player bar element selectors
 var $previousButton = $('.left-controls .previous');
@@ -163,14 +188,11 @@ if (indexOfNextSong >= currentAlbum.songs.length) {
     
     // Set a new current song
 	setSong(indexOfNextSong);
-//	currentlyPlayingSongNumber = currentSongIndex + 1;
-//  currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
+	currentSoundFile.play();
 	
     // Update the Player Bar information
-    $('.currently-playing .song-name').text(currentSongFromAlbum.name);
-    $('.currently-playing .artist-name').text(currentAlbum.artist);
-    $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.name + " - " + currentAlbum.name);
-    $('.left-controls .play-pause').html(playerBarPauseButton);
+	updatePlayerBarSong();
+
 	
 		// updates all the pertinent variables
     var lastSongNumber = getLastSongNumber(currentSongIndex);
@@ -199,8 +221,12 @@ var previousSong = function () {
     }
     
     // Set a new current song
-		currentlyPlayingSongNumber = currentSongIndex + 1;
-    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
+	setSong(currentSongIndex);	
+//	currentlyPlayingSongNumber = currentSongIndex + 1;
+//	currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
+	
+		// Play the current sound file
+	currentSoundFile.play();
 
     // Update the Player Bar information
     updatePlayerBarSong();
@@ -214,6 +240,21 @@ var previousSong = function () {
 	$lastSongNumberCell.html(lastSongNumber);
     	
 }; // ends previousSong
+
+// checkpoint 33 assignment
+var togglePlayFromPlayerBar = function () {
+	
+	var $PlayPauseButton = $('.left-controls .play-pause');
+	
+	if (currentSoundFile.isPaused() && $PlayPauseButton.html === playerBarPlayButton ) { // if song is paused and play button clicked in player bar
+		currentlyPlayingCell.html(pauseButtonTemplate); // change song number cell from play to pause
+		$('.left-controls .play-pause').html(playerBarPauseButton); // change HTML of player bar's play button to a pause button
+	}
+	else { // if song is playing and the pause button is clicked
+		currentlyPlayingCell.html(playButtonTemplate); // change song number cell from pause to play
+		$('.left-controls .play-pause').html(playerBarPlayButton); // change HTML of player bar's pause button to a play button
+	}
+};
 
 // when document loads, set up the album
 $(document).ready(function () {
