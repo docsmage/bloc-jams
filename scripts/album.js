@@ -17,25 +17,25 @@ var createSongRow = function (songNumber, songName, songLength) {
 
 		var songNumber = parseInt($(this).attr('data-song-number'));
 
-		if (currentlyPlayingSongNumber !== null) {
+		if (currentlyPlayingSongNumber !== null) { // if we already had a song playing
 			var currentlyPlayingCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
 			currentlyPlayingCell.html(currentlyPlayingSongNumber);
 		} 
 		
-		if (currentlyPlayingSongNumber !== songNumber) {
+		if (currentlyPlayingSongNumber !== songNumber) { // if the currently playing song is not the song we just clicked
 			$(this).html(pauseButtonTemplate);
 			setSong(songNumber - 1);
 			currentSoundFile.play();
 			$(this).html(pauseButtonTemplate);
 			updatePlayerBarSong();
 
-		} else if (currentlyPlayingSongNumber === songNumber) {
-			if (currentSoundFile.isPaused()) {
+		} else if (currentlyPlayingSongNumber === songNumber) { // if the currently playing song is the song we just clicked
+			if (currentSoundFile.isPaused()) { // if the song was paused
 				$(this).html(pauseButtonTemplate);
-				$('.left-controls .play-pause').html(playerBarPlayButton);
+				$('.left-controls .play-pause').html(playerBarPauseButton);
 				currentSoundFile.play();
 			}
-			else {
+			else { // if the song was playing
 				$(this).html(playButtonTemplate);
 				$('.left-controls .play-pause').html(playerBarPlayButton);
 				currentSoundFile.pause();
@@ -150,6 +150,7 @@ var updatePlayerBarSong = function () {
 var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
 var pauseButtonTemplate = '<a class="album-song-button"><span class="ion-pause"></span></a>';
 
+
 var playerBarPlayButton = '<span class="ion-play"></span>';
 var playerBarPauseButton = '<span class="ion-pause"></span>';
 
@@ -241,20 +242,36 @@ var previousSong = function () {
     	
 }; // ends previousSong
 
+var playerBarButton = $('.player-bar .play-pause'); // holds play-pause button
+
 // checkpoint 33 assignment
-var togglePlayFromPlayerBar = function () {
+var togglePlayFromPlayerBar = function (playerBarItem) { // will only get called when you click on the play/pause button
 	
-	var $PlayPauseButton = $('.left-controls .play-pause');
+	var currentlyPlayingCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]'); // clone of what's in clickHandler(); this makes it work, but we shouldn't repeat ourselves - check with John about a refactor
 	
-	if (currentSoundFile.isPaused() && $PlayPauseButton.html === playerBarPlayButton ) { // if song is paused and play button clicked in player bar
+	if (currentSoundFile == null) { // if no song is playing at all
+		
+		$('.left-controls .play-pause').html(playerBarPlayButton);
+	}
+	
+	else if (currentSoundFile.isPaused()) { // if song is paused
 		currentlyPlayingCell.html(pauseButtonTemplate); // change song number cell from play to pause
 		$('.left-controls .play-pause').html(playerBarPauseButton); // change HTML of player bar's play button to a pause button
+		currentSoundFile.play(); // play the song
 	}
-	else { // if song is playing and the pause button is clicked
-		currentlyPlayingCell.html(playButtonTemplate); // change song number cell from pause to play
+	
+	else { // if song is playing
+			currentlyPlayingCell.html(playButtonTemplate); // change song number cell from pause to play
 		$('.left-controls .play-pause').html(playerBarPlayButton); // change HTML of player bar's pause button to a play button
+		currentSoundFile.pause();
 	}
+	
 };
+
+var playerBarClickHandler = function ()
+{
+	togglePlayFromPlayerBar($(this));
+}
 
 // when document loads, set up the album
 $(document).ready(function () {
@@ -262,6 +279,7 @@ $(document).ready(function () {
 	setCurrentAlbum(albumPicasso);
 	$previousButton.click(previousSong);
 	$nextButton.click(nextSong);
-	$('.left-controls .play-pause').html(playerBarPauseButton);
-
+	$('.left-controls .play-pause').html(playerBarPlayButton); // by default it starts as a play button
+	playerBarButton.click(playerBarClickHandler); // click event for togglePlayFromPlayerBar
+	
 });
