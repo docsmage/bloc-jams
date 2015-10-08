@@ -12,9 +12,9 @@ var createSongRow = function (songNumber, songName, songLength) {
  
 	var $row = $(template); // turns the template into a jquery object
 
-	// when user clicks on a song...
 	var clickHandler = function () {
-
+	// when user clicks on a song...
+		
 		var songNumber = parseInt($(this).attr('data-song-number'));
 
 		if (currentlyPlayingSongNumber !== null) { // if we already had a song playing
@@ -26,7 +26,6 @@ var createSongRow = function (songNumber, songName, songLength) {
 			$(this).html(pauseButtonTemplate);
 			setSong(songNumber - 1);
 			currentSoundFile.play();
-			$(this).html(pauseButtonTemplate);
 			updatePlayerBarSong();
 
 		} else if (currentlyPlayingSongNumber === songNumber) { // if the currently playing song is the song we just clicked
@@ -144,6 +143,7 @@ var updatePlayerBarSong = function () {
     $('.currently-playing .song-name').text(currentSongFromAlbum.name);
     $('.currently-playing .artist-name').text(currentAlbum.artist);
     $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.name + " - " + currentAlbum.artist);
+		$('.left-controls .play-pause').html(playerBarPauseButton);
 	};
 
 // ALbum button templates
